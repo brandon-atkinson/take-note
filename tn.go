@@ -52,16 +52,14 @@ func editNote(ctx *cli.Context) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	err := cmd.Run()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "couldn't edit note '%s' with %s", note, editor)
-	}
-	return err
+	return cmd.Run()
 }
 
 func removeNote(ctx *cli.Context) error {
-	fmt.Println("remove " + ctx.Args().First())
-	return nil
+	note := ctx.Args().First()
+	location := noteLocation(note)
+
+	return os.Remove(location)
 }
 
 func listNotes(ctx *cli.Context) error {
