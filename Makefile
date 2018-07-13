@@ -1,7 +1,7 @@
-tn: tn.rkt
-	raco exe $^
+tn: tn.go
+	go build $^
 
-clean: 
+clean:
 	rm tn
 
 install: tn
