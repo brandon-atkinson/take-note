@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/urfave/cli"
+	"io/ioutil"
 	"os"
 	"os/exec"
+	"sort"
+	"strings"
 )
 
 const noteExt = "md"
@@ -31,7 +34,16 @@ func main() {
 			Name:    "list",
 			Usage:   "list existing notes",
 			Aliases: []string{"ls"},
-			Action:  listNotes,
+			Flags: []cli.Flag{
+				cli.BoolFlag{
+					Name: "reverse,r",
+				},
+				cli.BoolFlag{
+					Name: "time,t",
+				},
+			},
+			Action:                 listNotes,
+			UseShortOptionHandling: true,
 		},
 	}
 
@@ -63,8 +75,52 @@ func removeNote(ctx *cli.Context) error {
 }
 
 func listNotes(ctx *cli.Context) error {
-	fmt.Println("list notes")
+	noteDir := getNoteDir()
+	noteFiles, err := ioutil.ReadDir(noteDir)
+	if err != nil {
+		return err
+	}
+
+	timeSort := ctx.Bool("time")
+	reverse := ctx.Bool("reverse")
+
+	var toSort sort.Interface
+	if timeSort {
+		toSort = SortByLastModified(noteFiles)
+	} else {
+		toSort = SortByFileName(noteFiles)
+	}
+
+	if reverse {
+		toSort = sort.Reverse(toSort)
+	}
+
+	sort.Sort(toSort)
+
+	for _, fileInfo := range noteFiles {
+		fmt.Println(noteName(fileInfo.Name()))
+	}
+
 	return nil
+}
+
+type SortByFileName []os.FileInfo
+
+func (f SortByFileName) Len() int           { return len(f) }
+func (f SortByFileName) Less(i, j int) bool { return strings.Compare(f[i].Name(), f[j].Name()) < 0 }
+func (f SortByFileName) Swap(i, j int)      { f[i], f[j] = f[j], f[i] }
+
+type SortByLastModified []os.FileInfo
+
+func (f SortByLastModified) Len() int           { return len(f) }
+func (f SortByLastModified) Less(i, j int) bool { return f[i].ModTime().After(f[j].ModTime()) } // this is backward to make latest first in lists
+func (f SortByLastModified) Swap(i, j int)      { f[i], f[j] = f[j], f[i] }
+
+func removeFileExt(filename string, ext string) string {
+	if strings.HasSuffix(filename, ext) {
+		return strings.TrimSuffix(filename, ext)
+	}
+	return filename
 }
 
 func getAppDir() string {
@@ -97,4 +153,8 @@ func getEditor() string {
 
 func noteLocation(name string) string {
 	return getNoteDir() + "/" + name + "." + noteExt
+}
+
+func noteName(filename string) string {
+	return strings.TrimSuffix(filename, "."+noteExt)
 }
