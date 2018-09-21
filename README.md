@@ -17,7 +17,7 @@ exec bash
 ### Taking your first note
 
 ```
-tn my-first-note
+tn edit my-first-note
 ```
 
 ### Reviewing notes
@@ -27,21 +27,19 @@ Assuming you've already edited and saved a note using `tn` with the name
 edit.
 
 ```
-tn existing-note-name
+tn edit existing-note-name
 ```
-
-
-
 
 ## Building & Installing
 
-Building requires an installation of the [Racket programming
-language](https://racket-lang.org/). Once that is installed, building and
-installing can be done in one step with the normal make incantation:
+Installing the application is easy if you have the 'go' executable installed,
+configured a GOPATH, and have added $GOPATH/bin to your PATH environment
+variable.  
+
+You should be able to simply `go get` the binary:
 
 ```
-cd take-note 
-make install
+go get github.com/brandon-atkinson/take-note/cmd/tn
 ```
 
 ## Enabling shell completion
