@@ -31,7 +31,7 @@ fn run_cmd(cmd: Command) -> Result<()> {
 }
 
 fn note_dir() -> Result<PathBuf> {
-    let mut data_dir = dirs::config_dir().ok_or("data dir not available")?;
+    let mut data_dir = dirs::document_dir().ok_or("data dir not available")?;
     data_dir.push(APP_NAME);
     data_dir.push("notes");
 
