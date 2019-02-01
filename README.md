@@ -1,4 +1,4 @@
-# take-note (tn) - dead simple note taking 
+# take-note (tn) - simple note taking 
 
 ## Usage
 
@@ -17,41 +17,63 @@ exec bash
 ### Taking your first note
 
 ```
-tn my-first-note
+tn edit my-first-note
 ```
 
-### Reviewing notes
+Then save/quit from your editor. 
 
-Assuming you've already edited and saved a note using `tn` with the name
+### Editing notes
+
+Assuming you've already edited and saved a note using `tn edit` with the name
 `existing-note-name` you just have to invoke the command again to review or
 edit.
 
 ```
-tn existing-note-name
+tn edit existing-note-name
 ```
 
+### Showing notes
 
+If you just want to print the note text to the terminal (like cat would):
 
+```
+tn show existing-note-name
+```
+
+### Lising notes
+
+Want to get a list of notes you've taken? 
+
+```
+tn list
+```
+
+The list will be sorted in reverse chronological order, so the most recently
+edited notes should be right above your command prompt.
+
+### Removing notes
 
 ## Building & Installing
 
-Building requires an installation of the [Racket programming
-language](https://racket-lang.org/). Once that is installed, building and
-installing can be done in one step with the normal make incantation:
+The project is written using the Rust language. Assuming you have already
+installed a recent version, you should be able to build the project using
+cargo:
 
 ```
-cd take-note 
-make install
+cargo build --release
 ```
+
+You can then copy the `target/release/tn` executable somewhere on your path.
 
 ## Enabling shell completion
 
 This note taking tool (it's barely a program) has the ability to leverage bash
 command-line completion to speed up references to existing notes. If you have
-installed and configured the `bash-completion` package via homebrew, the following will install a user-specific completion script: 
+installed and configured the `bash-completion` package via homebrew, the
+following will install a user-specific completion script: 
 
 ```
-tn --bash-completion-script >> ~/.bash_completion 
+tn --bash-completion >> ~/.bash_completion 
 exec bash
 ```
 
@@ -60,9 +82,6 @@ system-wide and wish to enable completion system wide as well) you can
 install to the bash_completion.d directory instead: 
 
 ```
-tn --bash-completion-script > $(brew --prefix)/etc/bash_completion.d/tn 
+tn --bash-completion > $(brew --prefix)/etc/bash_completion.d/tn 
 exec bash
 ```
-
-
-

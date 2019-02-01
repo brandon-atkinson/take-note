@@ -1,0 +1,12 @@
+[package]
+name = "tn"
+version = "0.1.0"
+authors = ["Brandon Atkinson <brandon.n.atkinson@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+serde_derive = "1.0.84"
+serde = "1.0.84"
+docopt = "1.0.2"
+dirs = "1.0.4"
+regex = "1"
