@@ -6,6 +6,7 @@ use std::fs::DirEntry;
 use regex::Regex;
 use std::result::Result::Ok;
 use crate::tn::args::Command;
+use std::ffi::OsString;
 
 pub mod args;
 
@@ -61,9 +62,21 @@ fn editor() -> String {
     }
 }
 
+fn shell() -> String {
+    match env::var("SHELL") {
+        Ok(editor) => editor,
+        Err(_) => "sh".to_string(),
+    }
+}
+
 fn edit_cmd(path: PathBuf) -> process::Command {
-    let mut edit_cmd = process::Command::new(editor());
-    edit_cmd.arg(path);
+    let mut edit_shell_cmd = OsString::from(editor());
+    edit_shell_cmd.push(" ");
+    edit_shell_cmd.push(path);
+
+    let mut edit_cmd = process::Command::new(shell());
+    edit_cmd.arg("-c");
+    edit_cmd.arg(edit_shell_cmd);
     edit_cmd
 }
 
